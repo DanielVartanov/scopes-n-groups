@@ -1,0 +1,1 @@
+Scope = Class.new(Array)
