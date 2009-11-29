@@ -4,7 +4,7 @@ describe Scope do
 	describe "given a Scope derivative with defined scopes and mappings" do
 		before :all do
 			class Numbers < Scope
-				define_scope :even, proc { |number| number.even? }
+				define_scope :even, proc { |number| number % 2 == 0 }
 				define_scope :negative, proc { |number| number < 0 }
 
 				define_mapping :added_by_one, proc { |number| number + 1 }
