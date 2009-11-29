@@ -1,0 +1,64 @@
+h1. Scopes-n-Groups
+
+A simple tool for those who love clean DSL when working with arrays.
+
+h2. Scope class
+
+Usually it behaves like a normal array:
+
+<pre>scope = Scope.new [1, 2]
+scope << 3
+scope += [4]
+scope # => [1, 2, 3, 4]</pre>
+
+h2. Scoping
+
+Allows you to define named scopes for array just like for Rails ActiveRecord model.
+
+<pre>class Numbers < Scope
+  define_scope :even, proc { |number| number % 2 == 0 }
+  define_scope :positive, proc { |number| number > 0 }
+end
+
+numbers = Numbers.new((-5..5).to_a)
+numbers.even
+# => [-4, -2, 0, 2, 4]
+numbers.positive
+# =>  [1, 2, 3, 4, 5]
+numbers.even.positive
+# => [2, 4]</pre>
+
+h2. Mapping
+
+Allows to define named mappings for array.
+
+<pre>class Tokens < Scope
+  define_mapping :unescaped, proc { |token| (token[0] == ?\\) ? token[1..-1] : token }
+end
+
+tokens = Tokens.new ['\\$', '\\)', '%', '\\\\', '\\1', '\\a']
+tokens.unescaped # => ["$", ")", "%", "\\", "1", "a"]</pre>
+
+Mappings can be even combined with scopes:
+
+<pre>class Tokens
+  define_scope :special, proc { |token| token =~ /\W/ }
+end
+
+tokens.unescaped.special # => ["$", ")", "%", "\\"]</pre>
+
+h2. Grouping _(coming soon...)_
+
+Allows to group array elements by any property.
+
+<pre>class Fixnum
+  def modulo_three
+    self % 3
+  end
+end
+
+numbers = Scope.new((1..10).to_a)
+numbers.group_by(:modulo_three)
+# => { 0 => [3, 6, 9], 1 => [1, 4, 7, 10], 2 => [2, 5, 9] }</pre>
+
+_this feature is in development now_
