@@ -21,4 +21,26 @@ describe Scope do
 			end
 		end
 	end
+
+  describe "given Scope descendant with a local method" do
+    before :all do
+      class Numbers < Scope
+        def local_method; end
+      end
+    end
+
+    describe "when given proc calls this local stuff" do
+      before :all do
+        class Numbers
+          define_scope :sample_scope, proc { local_method }
+        end
+
+        @numbers = Numbers.new ['anything-to-make-#select-call-the-block']
+      end
+
+      it "should call the proc in the instance context" do
+        lambda { @numbers.sample_scope }.should_not raise_error
+      end
+    end
+  end
 end
