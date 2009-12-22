@@ -31,6 +31,30 @@ describe Scope do
 				@numbers.added_by_one.even.should == [2, 4, 6]
 				@numbers.even.added_by_one.should == [3, 5]
 			end
+
+      it "should be still instance of that class" do
+        @numbers.even.added_by_one.should be_kind_of(Numbers)
+        @numbers.added_by_one.even.should be_kind_of(Numbers)
+      end
 		end
+
+    describe "when class have local ivars" do
+      before :all do
+        class Numbers
+          attr_accessor :magic_number
+        end
+      end
+
+      describe "when ivars are set before calling scopes and mappings" do
+        before :each do
+          @numbers = Numbers.new((1..5).to_a)
+          @numbers.magic_number = 5
+        end
+
+        it "should save their values after call chain" do
+          @numbers.even.added_by_one.magic_number.should == 5
+        end
+      end
+    end
 	end
 end
